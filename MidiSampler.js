@@ -1,5 +1,4 @@
 function sampleMidi(path, offset) {
-  console.log("inside sample midi");
   var midiFileParser = require('midi-file-parser');
   var file = require('fs').readFileSync(path, 'binary');
   var midi = midiFileParser(file);
