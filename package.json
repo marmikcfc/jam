@@ -1,0 +1,20 @@
+{
+  "name": "jam",
+  "version": "0.0.1",
+  "main": "miditest.js",
+  "description": "AI based music generator!",
+  "author": {
+    "name": "Marmik Pandya",
+    "email": "'marmikpandya@gmail.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/marmikcfc/jam"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "colors": "^0.6.2",
+    "dnn": "^0.1.0",
+    "jsmidgen": "^0.1.5"
+  }
+}
