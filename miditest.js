@@ -8,12 +8,13 @@ var NOTE_OFFSET = 45;
 var WINDOW_WIDTH = 32;
 
 var files = [];
-/*for(var i = 1; i <= 53; i++) {
-  files.push('/ledZep/'+i+'.mid');
-}*/
+for(var i = 0; i <= 3; i++) {
+  files.push(i+'.mid');
+}
 
-files = ['0.mid']
+//files = ['0.mid']
 
+console.log(files);
 /*
  *  Extract samples from files
  */
@@ -30,6 +31,7 @@ for(var i = 0; i < files.length; i++) {
   }
   console.log("Parsed " + i + "th file");
 }
+
 console.log(data.length);
 
 
@@ -196,4 +198,4 @@ for(var i = 0; i < 40; i++) {
   }
 }
 
-fs.writeFileSync(process.argv[2] || 'test.mid', file.toBytes(), 'binary');
+fs.writeFileSync(process.argv[2] || 'zeplicained.mid', file.toBytes(), 'binary');
