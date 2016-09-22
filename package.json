@@ -15,6 +15,8 @@
   "dependencies": {
     "colors": "^0.6.2",
     "dnn": "^0.1.0",
-    "jsmidgen": "^0.1.5"
+    "jsmidgen": "^0.1.5",
+    "midi": "^0.9.5",
+    "midi-file-parser": "^1.0.0"
   }
 }
