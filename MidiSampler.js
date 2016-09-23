@@ -57,25 +57,3 @@ function generateEmptySample() {
 }
 
 module.exports = sampleMidi;
-
-
-//midi.tracks
-/*
-{
-  deltaTime: 0,
-  channel: 9,
-  type: 'channel',
-  subtype: 'noteOff',
-  noteNumber: 67,
-  velocity: 121
-}
-*/
-
-//midi.header
-/*
-{
-  formatType: 0,
-  trackCount: 1,
-  ticksPerBeat: 480
-}
-*/

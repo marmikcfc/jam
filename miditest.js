@@ -101,8 +101,8 @@ function createRBN(input, output, data) {
 }
 
 
-rbm1 = createRBN(1280, 500, data);
-data2 = rbm1.sampleHgivenV(data)[1];
+rbm1 = createRBN(1280, 500, data); 
+data2 = rbm1.sampleHgivenV(data)[1]; // get hidden layer probabilities from visible unit.
 rbm2 = createRBN(500, 250, data2);
 data3 = rbm2.sampleHgivenV(data2)[1];
 rbm3 = createRBN(250, 7, data3);
@@ -117,14 +117,6 @@ var tmpdata2 = rbm1.sampleHgivenV(data)[0];
 var tmpdata3 = rbm2.sampleHgivenV(data2)[0];
 var tmpfinal = rbm3.sampleHgivenV(data3)[0];
 
-// Randomize results
-// for(var i = 0; i < tmpfinal.length; i++) {
-//   for(var j = 0; j < tmpfinal[i].length; j++) {
-//     if (Math.random() > 0.8) {
-//       tmpfinal[i][j] += -0.05 + Math.random() * 0.1;
-//     }
-//   }
-// }
 
 function getRandomActivation(n) {
   var rand = [];
