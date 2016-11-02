@@ -1,22 +1,27 @@
 {
-  "name": "jam",
-  "version": "0.0.1",
-  "main": "miditest.js",
-  "description": "AI based music generator!",
-  "author": {
-    "name": "Marmik Pandya",
-    "email": "'marmikpandya@gmail.com"
+  "name": "node-fileserver",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "dependencies": {
+    "body-parser": "^1.13.1",
+    "express": "^4.13.0",
+    "jade": "^1.11.0",
+    "multer": "^0.1.8"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/marmikcfc/jam"
+    "url": "git+https://github.com/amir734jj/Node-FileServer-Test.git"
   },
-  "license": "MIT",
-  "dependencies": {
-    "colors": "^0.6.2",
-    "dnn": "^0.1.0",
-    "jsmidgen": "^0.1.5",
-    "midi": "^0.9.5",
-    "midi-file-parser": "^1.0.0"
-  }
+  "author": "Seyedamirhossein Hesamian",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/amir734jj/Node-FileServer-Test/issues"
+  },
+  "homepage": "https://github.com/amir734jj/Node-FileServer-Test#readme"
 }

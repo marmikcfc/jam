@@ -1,0 +1,28 @@
+extends ./layout.jade
+
+block content
+    table.table
+        thead
+            tr
+                th FileName
+                th Download Attachment
+                th Remove Attachment
+        tbody
+        - each element in files
+            tr
+                td= element
+                td
+                    button(class="btn btn-success", onClick='window.location="/getAttachments?filename=' + element + '"') Download
+                td
+                    button(class="btn btn-danger", onClick='window.location="/removeAttachments?filename=' + element + '"') Remove
+
+    form(method="POST", action="/upload", class="form", role="form", enctype="multipart/form-data")
+        div.form-group
+            label Select Files:
+            input(type="file", name="attachment", multiple)
+        div.btn-group
+        button.btn.btn-primary(type="submit") Send
+
+    form(method="POST", action="/genrerate", class="form", role="form", enctype="multipart/form-data")
+        button.btn.btn-primary(type="submit") Generate
+

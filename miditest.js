@@ -1,3 +1,4 @@
+function generateMiDi() {
 var colors = require('colors');
 var sampleMidi = require('./MidiSampler');
 var fs = require('fs');
@@ -8,8 +9,8 @@ var NOTE_OFFSET = 45;
 var WINDOW_WIDTH = 32;
 
 var files = [];
-for(var i = 0; i <= 3; i++) {
-  files.push(i+'.mid');
+for(var i = 0; i <1; i++) {
+  files.push('uploads/'+i+'.mid');
 }
 
 //files = ['0.mid']
@@ -33,6 +34,97 @@ for(var i = 0; i < files.length; i++) {
 }
 
 console.log(data.length);
+
+
+
+
+rbm1 = createRBN(1280, 500, data); 
+data2 = rbm1.sampleHgivenV(data)[1]; // get hidden layer probabilities from visible unit.
+rbm2 = createRBN(500, 250, data2);
+data3 = rbm2.sampleHgivenV(data2)[1];
+rbm3 = createRBN(250, 7, data3);
+
+/*
+ *  Generate note matrix using trained units
+ */
+
+var generated = [];
+
+var tmpdata2 = rbm1.sampleHgivenV(data)[0];
+var tmpdata3 = rbm2.sampleHgivenV(data2)[0];
+var tmpfinal = rbm3.sampleHgivenV(data3)[0];
+
+
+
+
+for(var i = 0; i < 18; i++) {
+  var hiddenTmp = rbm3.sampleVgivenH(tmpfinal)[1][0];
+  hiddenTmp = rbm2.sampleVgivenH([hiddenTmp])[1][0];
+  var tmp = reshape(rbm1.sampleVgivenH([hiddenTmp])[1][0]);
+  for(var j = 0; j < tmp.length; j++) {
+    generated.push(tmp[j]);
+  }
+}
+
+//Randomly select 1 and 0 and use the sampleVgivenH probablitiy to reconstruct. 
+for(var i = 0; i < generated.length; i++) {
+  for(var j = 0; j < generated[i].length; j++) {
+    generated[i][j] = (generated[i][j] > Math.random()) ? 1 : 0;
+  }
+}
+
+
+printMatrix(generated);
+
+/*
+ *  Save generated matrix to MIDI file
+ */
+
+
+var events = generated;
+
+
+
+var file = new Midi.File();
+var track = new Midi.Track();
+var offset = 0;
+var offsetStep = 32;
+var VELOCITY = 100;
+file.addTrack(track);
+
+var currentlyPlaying = {};
+for (var col = 0; col < events.length - 1; col++){
+  for(var i = 0; i < 40; i++) {
+    if(events[col][i] === 1 && !currentlyPlaying[i]) {
+      currentlyPlaying[i] = true;
+      track.addNoteOn(0, i+NOTE_OFFSET, offset, VELOCITY);
+      offset = 0;
+    }
+  }
+  var firstOff = true;
+  for(var i = 0; i < 40; i++) {
+    if(events[col][i] === 0 && currentlyPlaying[i]) {
+      currentlyPlaying[i] = false;
+      track.addNoteOff(0, i+NOTE_OFFSET, firstOff ? offsetStep : 0, VELOCITY);
+      firstOff = false;
+    }
+  }
+  if (firstOff)
+    offset += offsetStep;
+}
+var fistOff = true;
+for(var i = 0; i < 40; i++) {
+  if(events[events.length - 1][i] === 0 && currentlyPlaying[i]) {
+    currentlyPlaying[i] = false;
+    track.addNoteOff(0, i+NOTE_OFFSET, firstOff ? offsetStep : 0, VELOCITY);
+    firstOff = false;
+  }
+}
+
+fs.writeFileSync(process.argv[2] || 'uploads/generatedMIDI.mid', file.toBytes(), 'binary');
+}
+
+
 
 
 
@@ -101,23 +193,6 @@ function createRBN(input, output, data) {
 }
 
 
-rbm1 = createRBN(1280, 500, data); 
-data2 = rbm1.sampleHgivenV(data)[1]; // get hidden layer probabilities from visible unit.
-rbm2 = createRBN(500, 250, data2);
-data3 = rbm2.sampleHgivenV(data2)[1];
-rbm3 = createRBN(250, 7, data3);
-
-/*
- *  Generate note matrix using trained units
- */
-
-var generated = [];
-
-var tmpdata2 = rbm1.sampleHgivenV(data)[0];
-var tmpdata3 = rbm2.sampleHgivenV(data2)[0];
-var tmpfinal = rbm3.sampleHgivenV(data3)[0];
-
-
 function getRandomActivation(n) {
   var rand = [];
   for(var i = 0; i < n; i++) {
@@ -126,68 +201,4 @@ function getRandomActivation(n) {
   return rand;
 }
 
-
-for(var i = 0; i < 12; i++) {
-  var hiddenTmp = rbm3.sampleVgivenH(tmpfinal)[1][0];
-  hiddenTmp = rbm2.sampleVgivenH([hiddenTmp])[1][0];
-  var tmp = reshape(rbm1.sampleVgivenH([hiddenTmp])[1][0]);
-  for(var j = 0; j < tmp.length; j++) {
-    generated.push(tmp[j]);
-  }
-}
-
-for(var i = 0; i < generated.length; i++) {
-  for(var j = 0; j < generated[i].length; j++) {
-    generated[i][j] = (generated[i][j] > Math.random()) ? 1 : 0;
-  }
-}
-
-
-printMatrix(generated);
-
-/*
- *  Save generated matrix to MIDI file
- */
-
-
-var events = generated;
-
-
-
-var file = new Midi.File();
-var track = new Midi.Track();
-var offset = 0;
-var offsetStep = 32;
-var VELOCITY = 100;
-file.addTrack(track);
-
-var currentlyPlaying = {};
-for (var col = 0; col < events.length - 1; col++){
-  for(var i = 0; i < 40; i++) {
-    if(events[col][i] === 1 && !currentlyPlaying[i]) {
-      currentlyPlaying[i] = true;
-      track.addNoteOn(0, i+NOTE_OFFSET, offset, VELOCITY);
-      offset = 0;
-    }
-  }
-  var firstOff = true;
-  for(var i = 0; i < 40; i++) {
-    if(events[col][i] === 0 && currentlyPlaying[i]) {
-      currentlyPlaying[i] = false;
-      track.addNoteOff(0, i+NOTE_OFFSET, firstOff ? offsetStep : 0, VELOCITY);
-      firstOff = false;
-    }
-  }
-  if (firstOff)
-    offset += offsetStep;
-}
-var fistOff = true;
-for(var i = 0; i < 40; i++) {
-  if(events[events.length - 1][i] === 0 && currentlyPlaying[i]) {
-    currentlyPlaying[i] = false;
-    track.addNoteOff(0, i+NOTE_OFFSET, firstOff ? offsetStep : 0, VELOCITY);
-    firstOff = false;
-  }
-}
-
-fs.writeFileSync(process.argv[2] || 'zeplicained.mid', file.toBytes(), 'binary');
+module.exports = generateMiDi;
